@@ -1,11 +1,11 @@
-name: ۲ - حذف همه ترجمه‌ها
+name: 2 - Delete All Translations
 
 on:
   workflow_dispatch:
-    description: 'حذف تمام فایل‌های ترجمه از پوشه translation/'
+  description: 'Remove all translation files from the translation/ folder'
     inputs:
       confirm:
-        description:  '"yes" :برای تایید تایپ کنید'
+        description: 'Type "yes" to confirm deletion of all translation files'
         required: true
         type: string
 
@@ -16,25 +16,32 @@ jobs:
   delete-translations:
     runs-on: ubuntu-latest
     steps:
-      - name: تأیید عملیات
+      - name: Check confirmation
         run: |
           if [ "${{ github.event.inputs.confirm }}" != "yes" ]; then
-            echo "عملیات حذف لغو شد. برای تأیید باید 'yes' تایپ کنید."
+            echo "Deletion cancelled. You must type 'yes' to confirm."
             exit 1
           fi
 
-      - name: دریافت مخزن
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: حذف پوشه translation
+      - name: Remove translation folder
         run: |
           if [ -d "translation" ]; then
             rm -rf translation
-            echo "پوشه translation/ و تمام محتویات آن حذف شد."
+            echo "Removed translation/ folder and all its contents."
           else
-            echo "پوشه translation/ یافت نشد – چیزی برای حذف وجود ندارد."
+            echo "No translation/ folder found – nothing to delete."
           fi
 
+      - name: Commit and push deletion
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --quiet && git diff --staged --quiet || git commit -m "Delete all translation files [skip ci]"
+          git push
       - name: commit و push حذف
         run: |
           git config user.name "github-actions[bot]"
