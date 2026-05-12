@@ -3,6 +3,11 @@ name: 2 - Delete All Translations
 on:
   workflow_dispatch:
     description: 'Remove all translation files from the translation/ folder'
+    inputs:
+      confirm:
+        description: 'Type "yes" to confirm deletion of all translation files'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -11,6 +16,13 @@ jobs:
   delete-translations:
     runs-on: ubuntu-latest
     steps:
+      - name: Check confirmation
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "yes" ]; then
+            echo "Deletion cancelled. You must type 'yes' to confirm."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
