@@ -10,7 +10,7 @@ on:
       target_lang:
         description: 'Target language code (e.g., es, fr, de, zh, ja)'
         required: true
-        default: 'en'
+        default: 'fa'
         type: string
 
 permissions:
