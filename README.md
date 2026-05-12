@@ -1,4 +1,4 @@
-# GitHub Actions Translation Tool
+# Translate Action
 
 > **🔒 Privacy Notice**: This repository processes text you provide (e.g., via workflow inputs) and stores translation results in the `translation/` folder. If you plan to translate **sensitive, private, or confidential information**, please **make your fork of this repository private** to prevent unintended exposure. Public repositories will make all translation files publicly visible.
 
