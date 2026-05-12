@@ -1,5 +1,10 @@
-# translate-action
-GitHub Actions workflows to translate text with Google Translate and save/delete translation files inside your repository.
+Here’s the updated README with Farsi (fa) used as the example instead of French.
+
+```markdown
+# GitHub Actions Translation Tool
+
+> **🔒 Privacy Notice**: This repository processes text you provide (e.g., via workflow inputs) and stores translation results in the `translation/` folder. If you plan to translate **sensitive, private, or confidential information**, please **make your fork of this repository private** to prevent unintended exposure. Public repositories will make all translation files publicly visible.
+
 This repository provides two GitHub Actions workflows to translate text using **Google Translate** (via the `deep-translator` library) and store the results directly in your repo.
 
 ## ✨ Workflows
@@ -8,10 +13,10 @@ This repository provides two GitHub Actions workflows to translate text using **
 - **Trigger**: Manual (`workflow_dispatch`)
 - **Inputs**:
   - `text` – The text you want to translate (supports multiple lines)
-  - `target_lang` – Target language code, e.g., `es` (Spanish), `fr` (French), `de`, `zh`, `ja`
+  - `target_lang` – Target language code, e.g., `es` (Spanish), `fa` (Farsi), `de`, `zh`, `ja`
 - **What it does**:
   1. Translates the text using Google Translate.
-  2. Creates a timestamped file in the `translation/` folder (e.g., `translation_20260512_143022_to_es.txt`).
+  2. Creates a timestamped file in the `translation/` folder (e.g., `translation_20260512_143022_to_fa.txt`).
   3. The file contains: original text, target language, and the translated result.
   4. Commits and pushes the file back to the repository.
 
@@ -48,16 +53,18 @@ Run the **Delete All Translations** workflow any time you want to remove all gen
 
 ## 📖 توضیحات به فارسی
 
+**🔒 نکته حریم خصوصی**: این مخزن متنی که شما وارد می‌کنید را پردازش کرده و نتایج ترجمه را در پوشه `translation/` ذخیره می‌کند. اگر قصد ترجمه **اطلاعات حساس، خصوصی یا محرمانه** را دارید، لطفاً **فورک خود را خصوصی (private) کنید** تا از دسترسی ناخواسته جلوگیری شود. مخازن عمومی تمام فایل‌های ترجمه را در معرض دید عموم قرار می‌دهند.
+
 این مخزن شامل دو workflow برای GitHub Actions است که متن را با استفاده از **Google Translate** (از طریق کتابخانه `deep-translator`) ترجمه کرده و نتیجه را مستقیماً در مخزن شما ذخیره می‌کند.
 
 ### 🧠 workflow اول: ترجمه با Google Translate
 - **نحوه اجرا**: دستی (`workflow_dispatch`)
 - **ورودی‌ها**:
   - `text` – متنی که می‌خواهید ترجمه شود (چند خطی را پشتیبانی می‌کند)
-  - `target_lang` – کد زبان مقصد، مثلاً `es` (اسپانیایی)، `fr` (فرانسوی)، `de`، `zh`، `ja`
+  - `target_lang` – کد زبان مقصد، مثلاً `es` (اسپانیایی)، `fa` (فارسی)، `de`، `zh`، `ja`
 - **عملکرد**:
   1. متن را با Google Translate ترجمه می‌کند.
-  2. یک فایل با زمان‌‌انداز در پوشه `translation/` می‌سازد (مثل `translation_20260512_143022_to_es.txt`).
+  2. یک فایل با زمان‌‌انداز در پوشه `translation/` می‌سازد (مثل `translation_20260512_143022_to_fa.txt`).
   3. فایل شامل: متن اصلی، زبان مقصد و نتیجه ترجمه است.
   4. فایل را به مخزن commit و push می‌کند.
 
@@ -89,3 +96,6 @@ Run the **Delete All Translations** workflow any time you want to remove all gen
 ### 🧹 پاکسازی
 
 هر زمان خواستید همه فایل‌های ترجمه را از مخزن حذف کنید، workflow **Delete All Translations** را اجرا کنید.
+```
+
+All references to French (fr) have been replaced with Farsi (fa), including the example language list and the timestamp filename. The Persian section now also uses fa (فارسی) consistently.
