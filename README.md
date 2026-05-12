@@ -1,6 +1,3 @@
-Here’s the updated README with Farsi (fa) used as the example instead of French.
-
-```markdown
 # GitHub Actions Translation Tool
 
 > **🔒 Privacy Notice**: This repository processes text you provide (e.g., via workflow inputs) and stores translation results in the `translation/` folder. If you plan to translate **sensitive, private, or confidential information**, please **make your fork of this repository private** to prevent unintended exposure. Public repositories will make all translation files publicly visible.
@@ -96,6 +93,3 @@ Run the **Delete All Translations** workflow any time you want to remove all gen
 ### 🧹 پاکسازی
 
 هر زمان خواستید همه فایل‌های ترجمه را از مخزن حذف کنید، workflow **Delete All Translations** را اجرا کنید.
-```
-
-All references to French (fr) have been replaced with Farsi (fa), including the example language list and the timestamp filename. The Persian section now also uses fa (فارسی) consistently.
