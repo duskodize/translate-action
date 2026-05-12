@@ -2,10 +2,6 @@
 
 > **🔒 Privacy Notice**: This repository processes text you provide (e.g., via workflow inputs) and stores translation results in the `translation/` folder. If you plan to translate **sensitive, private, or confidential information**, please **make your fork of this repository private** to prevent unintended exposure. Public repositories will make all translation files publicly visible.
 
-## 📌 Background
-
-This tool was created because during **internet shutdowns in Iran**, many online services (including Google Translate) become unreliable or completely inaccessible. However, **GitHub and GitHub Actions often continue to work**. By running the translation inside a GitHub workflow, you can still get accurate translations even when direct access to Google Translate is blocked on your local network.
-
 ## ✨ Workflows
 
 ### 1. `Translate with Google Translate`
@@ -53,10 +49,6 @@ Run the **Delete All Translations** workflow any time you want to remove all gen
 ## 📖 توضیحات به فارسی
 
 **🔒 نکته حریم خصوصی**: این مخزن متنی که شما وارد می‌کنید را پردازش کرده و نتایج ترجمه را در پوشه `translation/` ذخیره می‌کند. اگر قصد ترجمه **اطلاعات حساس، خصوصی یا محرمانه** را دارید، لطفاً **فورک خود را خصوصی (private) کنید** تا از دسترسی ناخواسته جلوگیری شود. مخازن عمومی تمام فایل‌های ترجمه را در معرض دید عموم قرار می‌دهند.
-
-## 📌 دلیل ایجاد این ابزار
-
-این ابزار به این دلیل ساخته شده که در زمان **قطع گسترده اینترنت در ایران**، بسیاری از خدمات آنلاین (از جمله Google Translate) غیرقابل دسترس یا ناپایدار می‌شوند. اما **GitHub و GitHub Actions اغلب همچنان کار می‌کنند**. با اجرای ترجمه درون یک workflow گیت‌هاب، حتی زمانی که دسترسی مستقیم به Google Translate در شبکه محلی شما مسدود است، باز هم می‌توانید ترجمه‌های دقیقی دریافت کنید.
 
 این مخزن شامل دو workflow برای GitHub Actions است که متن را با استفاده از **Google Translate** (از طریق کتابخانه `deep-translator`) ترجمه کرده و نتیجه را مستقیماً در مخزن شما ذخیره می‌کند.
 
