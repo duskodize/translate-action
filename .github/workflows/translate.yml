@@ -1,16 +1,16 @@
-name: ۱ - ترجمه با گوگل ترنسلیت 
+name: 1 - Translate with Google Translate
 
 on:
   workflow_dispatch:
     inputs:
       text:
-        description: 'متنی که می‌خواهید ترجمه شود'
+        description: 'Text to translate'
         required: true
         type: string
       target_lang:
-        description: 'کد زبان مقصد (مثال: fa برای فارسی، en برای انگلیسی، es برای اسپانیایی)'
+        description: 'Target language code (e.g., es, fr, de, zh, ja)'
         required: true
-        default: 'fa'
+        default: 'en'
         type: string
 
 permissions:
@@ -20,39 +20,44 @@ jobs:
   translate:
     runs-on: ubuntu-latest
     steps:
-      - name: دریافت مخزن
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: نصب deep-translator
+      - name: Install deep-translator
         run: pip install deep-translator
 
-      - name: ترجمه متن (حفظ خطوط جدید)
+      - name: Translate text (preserving newlines)
         id: translate
         env:
           TEXT: ${{ github.event.inputs.text }}
           TARGET: ${{ github.event.inputs.target_lang }}
         run: |
+          # Pass the multi-line text via a here-doc to avoid variable expansion issues
           python -c "
           import os
           from deep_translator import GoogleTranslator
 
+          # Read the multi-line text from the environment variable
           text = os.environ['TEXT']
           target = os.environ['TARGET']
 
           translator = GoogleTranslator(source='auto', target=target)
           translated = translator.translate(text)
 
-          print('--- متن اصلی ---')
+          # For logs
+          print('--- Original text ---')
           print(text)
-          print('--- متن ترجمه شده ---')
+          print('--- Translated text ---')
           print(translated)
 
+          # Save to GitHub output (will be single-line, but that’s fine for internal use)
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              # Escape newlines for safe single-line output
               escaped = translated.replace('\n', '\\n')
               f.write(f'result={escaped}')
           "
 
-      - name: ذخیره ترجمه در فایل (حفظ قالب)
+      - name: Save translation to file (preserving format)
         env:
           TEXT: ${{ github.event.inputs.text }}
           TARGET: ${{ github.event.inputs.target_lang }}
@@ -63,23 +68,18 @@ jobs:
           FILENAME="translation_${TIMESTAMP}_to_${TARGET}.txt"
           FILEPATH="translation/${FILENAME}"
 
+          # Write original and translated text, preserving all line breaks
           {
-            echo "=== متن اصلی ==="
+            echo "=== Original text ==="
             echo "$TEXT"
             echo ""
-            echo "=== ترجمه (زبان مقصد: $TARGET) ==="
+            echo "=== Translation (target: $TARGET) ==="
+            # Convert escaped newlines back to real newlines
             echo -e "$TRANSLATED"
           } > "$FILEPATH"
 
-          echo "ایجاد شد: $FILEPATH"
+          echo "Created $FILEPATH"
 
-      - name: commit و push فایل ترجمه
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add translation/
-          git diff --quiet && git diff --staged --quiet || git commit -m "افزودن فایل ترجمه [skip ci]"
-          git push
       - name: Commit and push translation file
         run: |
           git config user.name "github-actions[bot]"
