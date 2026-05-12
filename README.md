@@ -4,7 +4,7 @@
 
 ## 📌 Background
 
-This tool was created because during **internet shutdowns in Iran**, many online services (including Google Translate) become unreliable or completely inaccessible. However, **GitHub and GitHub Actions often continue to work** via alternative routes or less restricted IPs. By running the translation inside a GitHub workflow, you can still get accurate translations even when direct access to Google Translate is blocked on your local network.
+This tool was created because during **internet shutdowns in Iran**, many online services (including Google Translate) become unreliable or completely inaccessible. However, **GitHub and GitHub Actions often continue to work**. By running the translation inside a GitHub workflow, you can still get accurate translations even when direct access to Google Translate is blocked on your local network.
 
 ## ✨ Workflows
 
@@ -56,7 +56,7 @@ Run the **Delete All Translations** workflow any time you want to remove all gen
 
 ## 📌 دلیل ایجاد این ابزار
 
-این ابزار به این دلیل ساخته شده که در زمان **قطع گسترده اینترنت در ایران**، بسیاری از خدمات آنلاین (از جمله Google Translate) غیرقابل دسترس یا ناپایدار می‌شوند. اما **GitHub و GitHub Actions اغلب از طریق مسیرهای جایگزین یا آی‌پی‌های با محدودیت کمتر همچنان کار می‌کنند**. با اجرای ترجمه درون یک workflow گیت‌هاب، حتی زمانی که دسترسی مستقیم به Google Translate در شبکه محلی شما مسدود است، باز هم می‌توانید ترجمه‌های دقیقی دریافت کنید.
+این ابزار به این دلیل ساخته شده که در زمان **قطع گسترده اینترنت در ایران**، بسیاری از خدمات آنلاین (از جمله Google Translate) غیرقابل دسترس یا ناپایدار می‌شوند. اما **GitHub و GitHub Actions اغلب همچنان کار می‌کنند**. با اجرای ترجمه درون یک workflow گیت‌هاب، حتی زمانی که دسترسی مستقیم به Google Translate در شبکه محلی شما مسدود است، باز هم می‌توانید ترجمه‌های دقیقی دریافت کنید.
 
 این مخزن شامل دو workflow برای GitHub Actions است که متن را با استفاده از **Google Translate** (از طریق کتابخانه `deep-translator`) ترجمه کرده و نتیجه را مستقیماً در مخزن شما ذخیره می‌کند.
 
