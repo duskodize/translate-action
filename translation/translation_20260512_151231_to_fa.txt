@@ -1,5 +1,0 @@
-=== Original text ===
-test
-
-=== Translation (target: fa) ===
-تست کنید
