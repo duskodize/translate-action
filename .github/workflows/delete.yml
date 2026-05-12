@@ -2,7 +2,7 @@ name: 2 - Delete All Translations
 
 on:
   workflow_dispatch:
-  description: 'Remove all translation files from the translation/ folder'
+    description: 'Remove all translation files from the translation/ folder'
     inputs:
       confirm:
         description: 'Type "yes" to confirm deletion of all translation files'
@@ -41,11 +41,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           git diff --quiet && git diff --staged --quiet || git commit -m "Delete all translation files [skip ci]"
-          git push
-      - name: commit و push حذف
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -m "حذف تمام فایل‌های ترجمه [skip ci]"
           git push
