@@ -1,16 +1,34 @@
-name: 1 - Translate with Google Translate
+name: 1 - Translate with Google Translate (File or Text)
 
 on:
   workflow_dispatch:
     inputs:
-      text:
-        description: 'Text to translate'
+      input_type:
+        description: 'Type of input'
         required: true
+        default: 'text'
+        type: choice
+        options:
+          - text
+          - file
+      text:
+        description: 'Text to translate (used if input_type = text)'
+        required: false
+        type: string
+      source_file:
+        description: 'Path to file in repo to translate (used if input_type = file)'
+        required: false
+        default: 'docs/input.txt'
         type: string
       target_lang:
-        description: 'Target language code (e.g., es, fr, de, zh, ja)'
+        description: 'Target language code (e.g., es, fr, de, zh, ja, fa)'
         required: true
         default: 'fa'
+        type: string
+      output_file_suffix:
+        description: 'Suffix for output filename (only for file input). Example: "_translated_fa"'
+        required: false
+        default: '_translated'
         type: string
 
 permissions:
@@ -26,64 +44,132 @@ jobs:
       - name: Install deep-translator
         run: pip install deep-translator
 
-      - name: Translate text (preserving newlines)
-        id: translate
+      # ------------------------------------------------------------------
+      # MODE 1: Translate raw text input
+      # ------------------------------------------------------------------
+      - name: Save text input to file (if text mode)
+        if: github.event.inputs.input_type == 'text'
         env:
-          TEXT: ${{ github.event.inputs.text }}
+          RAW_TEXT: ${{ github.event.inputs.text }}
+        run: |
+          printf '%s' "$RAW_TEXT" > input_raw.txt
+
+      # ------------------------------------------------------------------
+      # MODE 2: Use a file from the repo (if file mode)
+      # ------------------------------------------------------------------
+      - name: Verify source file exists (file mode)
+        if: github.event.inputs.input_type == 'file'
+        run: |
+          SOURCE="${{ github.event.inputs.source_file }}"
+          if [ ! -f "$SOURCE" ]; then
+            echo "Error: File '$SOURCE' not found in repository."
+            exit 1
+          fi
+          echo "SOURCE_FILE=$SOURCE" >> $GITHUB_ENV
+
+      - name: Copy source file to standard input filename (file mode)
+        if: github.event.inputs.input_type == 'file'
+        run: |
+          cp "$SOURCE_FILE" input_raw.txt
+
+      # ------------------------------------------------------------------
+      # Translate using deep-translator (handles any input from input_raw.txt)
+      # ------------------------------------------------------------------
+      - name: Translate content preserving newlines
+        env:
           TARGET: ${{ github.event.inputs.target_lang }}
         run: |
-          # Pass the multi-line text via a here-doc to avoid variable expansion issues
           python -c "
           import os
           from deep_translator import GoogleTranslator
 
-          # Read the multi-line text from the environment variable
-          text = os.environ['TEXT']
-          target = os.environ['TARGET']
+          with open('input_raw.txt', 'r', encoding='utf-8') as f:
+              text = f.read()
 
+          target = os.environ['TARGET']
           translator = GoogleTranslator(source='auto', target=target)
           translated = translator.translate(text)
 
-          # For logs
-          print('--- Original text ---')
-          print(text)
-          print('--- Translated text ---')
-          print(translated)
+          with open('translated_raw.txt', 'w', encoding='utf-8') as f:
+              f.write(translated)
 
-          # Save to GitHub output (will be single-line, but that’s fine for internal use)
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-              # Escape newlines for safe single-line output
-              escaped = translated.replace('\n', '\\n')
-              f.write(f'result={escaped}')
+          # Optional preview
+          print('--- Translation preview (first 200 chars) ---')
+          print(translated[:200] + ('...' if len(translated) > 200 else ''))
           "
 
-      - name: Save translation to file (preserving format)
-        env:
-          TEXT: ${{ github.event.inputs.text }}
-          TARGET: ${{ github.event.inputs.target_lang }}
-          TRANSLATED: ${{ steps.translate.outputs.result }}
+      # ------------------------------------------------------------------
+      # Determine output filename (always inside docs/translation/ folder)
+      # ------------------------------------------------------------------
+      - name: Determine output filename
+        id: output_name
         run: |
-          mkdir -p translation
-          TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
-          FILENAME="translation_${TIMESTAMP}_to_${TARGET}.txt"
-          FILEPATH="translation/${FILENAME}"
+          mkdir -p docs/translation
+          if [ "${{ github.event.inputs.input_type }}" = "text" ]; then
+            TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
+            TARGET="${{ github.event.inputs.target_lang }}"
+            FILENAME="docs/translation/translation_${TIMESTAMP}_to_${TARGET}.txt"
+          else
+            # For file mode: base name from source file
+            SOURCE="${{ github.event.inputs.source_file }}"
+            BASENAME=$(basename "$SOURCE")
+            NAME_NOEXT="${BASENAME%.*}"
+            EXT="${BASENAME##*.}"
+            SUFFIX="${{ github.event.inputs.output_file_suffix }}_${{ github.event.inputs.target_lang }}"
+            if [ "$EXT" != "$BASENAME" ]; then
+              OUTFILE="${NAME_NOEXT}${SUFFIX}.${EXT}"
+            else
+              OUTFILE="${BASENAME}${SUFFIX}"
+            fi
+            BASE_OUTPUT="docs/translation/${OUTFILE}"
+            # Check if file already exists
+            if [ -f "$BASE_OUTPUT" ]; then
+              TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
+              NAME_NOEXT="${OUTFILE%.*}"
+              EXT="${OUTFILE##*.}"
+              if [ "$EXT" != "$OUTFILE" ]; then
+                OUTFILE="${NAME_NOEXT}_${TIMESTAMP}.${EXT}"
+              else
+                OUTFILE="${NAME_NOEXT}_${TIMESTAMP}"
+              fi
+              FILENAME="docs/translation/${OUTFILE}"
+            else
+              FILENAME="$BASE_OUTPUT"
+            fi
+          fi
+          echo "FILENAME=$FILENAME" >> $GITHUB_OUTPUT
 
-          # Write original and translated text, preserving all line breaks
+      # ------------------------------------------------------------------
+      # Build final file: for text mode include original + translation
+      # For file mode: include only translation + reference to source path
+      # ------------------------------------------------------------------
+      - name: Build final file (text mode)
+        if: github.event.inputs.input_type == 'text'
+        run: |
           {
             echo "=== Original text ==="
-            echo "$TEXT"
+            cat input_raw.txt
             echo ""
-            echo "=== Translation (target: $TARGET) ==="
-            # Convert escaped newlines back to real newlines
-            echo -e "$TRANSLATED"
-          } > "$FILEPATH"
+            echo "=== Translation (target: ${{ github.event.inputs.target_lang }}) ==="
+            cat translated_raw.txt
+          } > "${{ steps.output_name.outputs.FILENAME }}"
+          echo "Created ${{ steps.output_name.outputs.FILENAME }}"
 
-          echo "Created $FILEPATH"
+      - name: Build final file (file mode)
+        if: github.event.inputs.input_type == 'file'
+        run: |
+          {
+            echo "# Translation of: ${{ github.event.inputs.source_file }}"
+            echo "# Target language: ${{ github.event.inputs.target_lang }}"
+            echo ""
+            cat translated_raw.txt
+          } > "${{ steps.output_name.outputs.FILENAME }}"
+          echo "Created ${{ steps.output_name.outputs.FILENAME }}"
 
-      - name: Commit and push translation file
+      - name: Commit and push translation file(s)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add translation/
+          git add docs/translation/
           git diff --quiet && git diff --staged --quiet || git commit -m "Add translation file [skip ci]"
           git push
