@@ -1,4 +1,4 @@
-# Private-translate-action
+# translate-action
 GitHub Actions workflows to translate text or files with Google Translate and save/delete translation files inside your repository.
 
 > **🔒 Privacy Notice**: This repository processes text or files you provide (e.g., via workflow inputs or existing files) and stores translation results in the `docs/translation/` folder. If you plan to translate **sensitive, private, or confidential information**, please **make your fork of this repository private** to prevent unintended exposure. Public repositories will make all translation files publicly visible.
