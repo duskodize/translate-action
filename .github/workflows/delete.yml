@@ -2,7 +2,7 @@ name: 2 - Delete All Translations
 
 on:
   workflow_dispatch:
-    description: 'Remove all translation files from the translation/ folder'
+    description: 'Remove all translation files from the docs/translation folder'
     inputs:
       confirm:
         description: 'Type "yes" to confirm deletion of all translation files'
@@ -26,13 +26,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Remove translation folder
+      - name: Remove docs/translation folder
         run: |
-          if [ -d "translation" ]; then
-            rm -rf translation
-            echo "Removed translation/ folder and all its contents."
+          if [ -d "docs/translation" ]; then
+            rm -rf docs/translation
+            echo "Removed docs/translation/ folder and all its contents."
           else
-            echo "No translation/ folder found – nothing to delete."
+            echo "No docs/translation/ folder found – nothing to delete."
           fi
 
       - name: Commit and push deletion
@@ -40,5 +40,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -m "Delete all translation files [skip ci]"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Delete all translation files from docs/translation [skip ci]"
           git push
